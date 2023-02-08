@@ -1,0 +1,25 @@
+package org.springframework.samples.petclinic.partida;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.samples.petclinic.jugador.Jugador;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface VotoRepository extends CrudRepository<Voto,Integer>{
+    List<Voto> findAll();
+
+    @Query("SELECT v FROM Voto v WHERE v.ronda = :ronda AND v.turno = :turno AND v.partida = :partida")
+    List<Voto> findVotosRondaTurno(@Param("ronda") Long ronda, @Param("turno") Long turno,@Param("partida") Partida partida);
+
+    @Query("SELECT v FROM Voto v WHERE v.turno = :turno AND v.jugador = :jugador AND v.ronda = :ronda AND v.partida = :partida")
+    List<Voto> findVotosTurnoJugador(@Param("jugador") Jugador jugador, @Param("turno") Long turno, @Param("ronda") Long ronda,@Param("partida") Partida partida);
+
+    @Query("SELECT v FROM Voto v WHERE v.turno = :turno AND v.ronda = :ronda AND v.partida = :partida AND v.elegido = TRUE")
+    Optional<Voto> findVotosTurnoElegidos(@Param("turno") Long turno, @Param("ronda") Long ronda, @Param("partida") Partida partida);
+
+}
